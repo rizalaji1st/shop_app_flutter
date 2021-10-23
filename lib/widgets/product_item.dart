@@ -43,6 +43,7 @@ class ProductItem extends StatelessWidget {
               onPressed: () {
                 product.toggleFavoriteStatus();
               },
+              // ignore: deprecated_member_use
               color: Theme.of(context).accentColor,
             ),
           ),
@@ -57,6 +58,7 @@ class ProductItem extends StatelessWidget {
             onPressed: () {
               cart.addItem(product.id, product.price, product.title);
             },
+            // ignore: deprecated_member_use
             color: Theme.of(context).accentColor,
           ),
         ),

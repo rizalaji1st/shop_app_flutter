@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.purple,
+          // ignore: deprecated_member_use
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
         ),
