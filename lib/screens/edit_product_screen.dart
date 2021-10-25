@@ -35,7 +35,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   void didChangeDependencies() {
-    if (_isInit = true) {
+    if (_isInit == true) {
       if (ModalRoute.of(context)!.settings.arguments != null) {
         final productId = ModalRoute.of(context)!.settings.arguments as String;
         final productData =
