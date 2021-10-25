@@ -78,7 +78,9 @@ class Products with ChangeNotifier {
           id: prodId,
           title: prodData['title'],
           description: prodData['description'],
-          price: prodData['price'] == prodData['price'].roundToDouble() ? prodData['price'].toDouble() : prodData['price'],
+          price: prodData['price'] == prodData['price'].roundToDouble()
+              ? prodData['price'].toDouble()
+              : prodData['price'],
           imageUrl: prodData['imageUrl'],
           isFavorite: prodData['isFavorite'],
         ));
@@ -119,9 +121,18 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
+      final url =
+          'https://shop-app-flutter-udemy-8fff3-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+      await http.patch(Uri.parse(url),
+          body: json.encode({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'imageUrl': newProduct.imageUrl,
+            'price': newProduct.price,
+          }));
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {
@@ -130,7 +141,16 @@ class Products with ChangeNotifier {
   }
 
   void deleteProduct(String id) {
-    _items.removeWhere((prod) => prod.id == id);
+    final url =
+        'https://shop-app-flutter-udemy-8fff3-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+    Product? existingProduct = _items[existingProductIndex];
+    http.delete(Uri.parse(url)).then((_){
+      existingProduct = null;
+    }).catchError((error){
+      _items.insert(existingProductIndex, existingProduct!);
+    });
+    _items.removeAt(existingProductIndex);
     notifyListeners();
   }
 }
