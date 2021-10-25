@@ -66,9 +66,33 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
+  Future<void> fetchAndSetProducts() async {
+    const url =
+        'https://shop-app-flutter-udemy-8fff3-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
+    try {
+      final response = await http.get(Uri.parse(url));
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProducts = [];
+      extractedData.forEach((prodId, prodData) {
+        loadedProducts.add(Product(
+          id: prodId,
+          title: prodData['title'],
+          description: prodData['description'],
+          price: prodData['price'] == prodData['price'].roundToDouble() ? prodData['price'].toDouble() : prodData['price'],
+          imageUrl: prodData['imageUrl'],
+          isFavorite: prodData['isFavorite'],
+        ));
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<void> addProduct(Product product) async {
     const url =
-        'https://shop-app-flutter-udemy-8fff3-default-rtdb.asia-southeast1.firebasedatabase.app/products';
+        'https://shop-app-flutter-udemy-8fff3-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
     try {
       final response = await http.post(
         Uri.parse(url),
